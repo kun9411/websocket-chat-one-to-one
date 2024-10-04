@@ -1,0 +1,36 @@
+version: "3.1"
+
+services:
+  mongo:
+    image: mongo:6.0.2
+    container_name: mongo
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      MONGO_INITDB_ROOT_USERNAME: kun
+      MONGO_INITDB_ROOT_PASSWORD: kun
+    volumes:
+      - /etc/localtime:/etc/localtime  # 时区
+      - /home/mayanan/mongodb/data/db:/data/db  # 挂载数据目录
+      - /home/mayanan/mongodb/data/log:/var/log/mongodb  # 挂载日志目录
+      - /home/mayanan/mongodb/data/config:/etc/mongo  # 挂载配置目录
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo  # 使用服务名来连接
+      ME_CONFIG_MONGODB_ADMINUSERNAME: kun
+      ME_CONFIG_MONGODB_ADMINPASSWORD: kun
+      ME_CONFIG_BASICAUTH_USERNAME: kun
+      ME_CONFIG_BASICAUTH_PASSWORD: kun
+
+networks:
+  my-docker-compose-network:  # 直接定义网络名
